@@ -1,13 +1,18 @@
+from item import Item
 from player import Player
 from room import Room
-
-import textwrap
 
 # Declare all the rooms
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons."),
+                     "North of you, the cave mount beckons.",
+                     items=[
+                         Item(
+                             'torch',
+                             "It's glowing a faint yellow."
+                         )
+                     ]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -55,17 +60,6 @@ player = Player('Adventurer', room['outside'])
 # If the user enters "q", quit the game.
 
 
-def print_room_info(room: Room) -> None:
-    print(f'\n{room.name}')
-    print('='*len(room.name))
-    wrapper = textwrap.TextWrapper()
-    desc = wrapper.fill(text=room.description)
-    print(desc)
-    print('\nItems in this room')
-    print('==================')
-    print([item.name for item in room.items])
-
-
 def skip_input() -> None:
     print(
         "I don't understand that command. Type [h] for a list of commands.\n")
@@ -78,6 +72,9 @@ Valid commands:
     [s]: move south
     [e]: move east
     [w]: move west
+    [i] or [inventory]: view inventory
+    [get]/[take] [item]: take item from room
+    [drop] [item]: drop item in room
     [q] or [quit]: quit
     [h] or [help]: help text
     """
@@ -91,20 +88,36 @@ print('==============================\n')
 print('Type [h] for commands.\n')
 
 while not done:
-    print_room_info(player.current_room)
-    command = input('What would you like to do? \n> ').split()
+    player.current_room.print_room_info()
+    player_input = input('\nWhat would you like to do? \n> ').split()
+    command = player_input[0]
 
-    if command[0] in ('n', 's', 'e', 'w'):
-        player.current_room = player.move_to(command[0], player.current_room)
+    if command in ('n', 's', 'e', 'w'):
+        player.current_room = player.move_to(command)
         continue
 
-    if command[0] in ('q', 'quit'):
+    if command in ('q', 'quit'):
         done = True
         print('\nThanks for playing!')
         continue
 
-    if command[0] in ('h', 'help'):
+    if command in ('h', 'help'):
         print_help_text()
+        continue
+
+    if command in ('i', 'inventory'):
+        player.print_inventory()
+        continue
+
+    if command in ('get', 'take'):
+        item_name = ' '.join(player_input[1:])  # multi-word item support
+        player.inventory = player.take_item(item_name)
+        player.current_room.items = player.current_room.take_item(item_name)
+        continue
+
+    if command == 'drop':
+        item_name = ' '.join(player_input[1:])  # multi-word item support
+        player.inventory = player.drop_item(item_name)
         continue
 
     else:
