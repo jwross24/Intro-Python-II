@@ -81,13 +81,6 @@ Valid commands:
 
 done = False
 
-direction_dict = {
-    'n': 'n_to',
-    's': 's_to',
-    'e': 'e_to',
-    'w': 'w_to',
-}
-
 while not done:
     print_room_info(player.current_room)
     command = input('What would you like to do next?: ')
