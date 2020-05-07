@@ -61,6 +61,9 @@ def print_room_info(room: Room) -> None:
     wrapper = textwrap.TextWrapper()
     desc = wrapper.fill(text=room.description)
     print(desc)
+    print('\nItems in this room')
+    print('==================')
+    print([item.name for item in room.items])
 
 
 def skip_input() -> None:
