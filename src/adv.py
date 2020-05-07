@@ -7,7 +7,7 @@ import textwrap
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons."),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -56,14 +56,16 @@ player = Player('Adventurer', room['outside'])
 
 
 def print_room_info(room: Room) -> None:
-    print(f'\nCurrent room: [{room.name}]')
+    print(f'\n{room.name}')
+    print('='*len(room.name))
     wrapper = textwrap.TextWrapper()
     desc = wrapper.fill(text=room.description)
     print(desc)
 
 
 def skip_input() -> None:
-    print("I don't understand that. Type [h] for valid commands.\n")
+    print(
+        "I don't understand that command. Type [h] for a list of commands.\n")
 
 
 def print_help_text() -> None:
@@ -81,25 +83,24 @@ Valid commands:
 
 done = False
 
+print('\nWelcome to your new adventure!')
+print('==============================\n')
+print('Type [h] for commands.\n')
+
 while not done:
     print_room_info(player.current_room)
-    command = input('What would you like to do next?: ')
+    command = input('What would you like to do? \n> ').split()
 
-    # Check that the command is properly formatted
-    if len(command) > 2 or len(command) < 1:
-        skip_input()
+    if command[0] in ('n', 's', 'e', 'w'):
+        player.current_room = player.move_to(command[0], player.current_room)
         continue
 
-    if command in ('n', 's', 'e', 'w'):
-        player.current_room = player.move_to(command, player.current_room)
-        continue
-
-    if command in ('q', 'quit'):
+    if command[0] in ('q', 'quit'):
         done = True
-        print('\nThanks for playing! Hope to see you again soon!')
+        print('\nThanks for playing!')
         continue
 
-    if command in ('h', 'help'):
+    if command[0] in ('h', 'help'):
         print_help_text()
         continue
 
