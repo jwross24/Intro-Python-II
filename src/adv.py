@@ -55,17 +55,65 @@ player = Player('Adventurer', room['outside'])
 # If the user enters "q", quit the game.
 
 
-def show_current_room_info(room: Room) -> None:
-    print('Current room:', room.name)
+def print_room_info(room: Room) -> None:
+    print(f'\nCurrent room: [{room.name}]')
     wrapper = textwrap.TextWrapper()
     desc = wrapper.fill(text=room.description)
     print(desc)
 
 
-cur_room = player.current_room
-show_current_room_info(cur_room)
+def skip_input() -> None:
+    print("I don't understand that. Type [h] for valid commands.\n")
 
-i = 1
-while i > 0:
 
-    i -= 1
+def print_help_text() -> None:
+    help_text = """
+Valid commands:
+    [n]: move north
+    [s]: move south
+    [e]: move east
+    [w]: move west
+    [q] or [quit]: quit
+    [h] or [help]: help text
+    """
+    print(help_text)
+
+
+def move_player() -> None:
+    pass
+
+
+done = False
+
+direction_dict = {
+    'n': 'n_to',
+    's': 's_to',
+    'e': 'e_to',
+    'w': 'w_to',
+}
+
+while not done:
+    print_room_info(player.current_room)
+    command = input('What would you like to do next?: ')
+
+    # Check that the command is properly formatted
+    if len(command) > 2 or len(command) < 1:
+        skip_input()
+        continue
+
+    if command in ('n', 's', 'e', 'w'):
+        player.current_room = player.move_to(command, player.current_room)
+        continue
+
+    if command in ('q', 'quit'):
+        done = True
+        print('\nThanks for playing! Hope to see you again soon!')
+        continue
+
+    if command in ('h', 'help'):
+        print_help_text()
+        continue
+
+    else:
+        skip_input()
+        continue
