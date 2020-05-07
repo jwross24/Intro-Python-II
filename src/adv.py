@@ -79,10 +79,6 @@ Valid commands:
     print(help_text)
 
 
-def move_player() -> None:
-    pass
-
-
 done = False
 
 direction_dict = {
